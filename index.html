@@ -1,0 +1,231 @@
+<!doctype html>
+<!-- The MoonHug front page. See README.md for how it is previewed and published. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MoonHug Editor</title>
+<meta name="description" content="An extensible editor for Odin projects: a generic editor you extend with attributes, an engine plugin with scenes, components and rendering, and the plugins that build on it.">
+<meta name="theme-color" content="#0b0b0c">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MoonHug Editor">
+<meta property="og:description" content="An extensible editor for Odin projects.">
+<meta property="og:url" content="https://moonhug-editor.github.io/">
+<meta property="og:image" content="https://moonhug-editor.github.io/media/logo.png">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" href="media/favicon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-row">
+    <a class="brand" href="#top"><img src="media/favicon.png" alt="" width="28" height="28">MoonHug</a>
+    <nav class="nav-links">
+      <a href="#architecture">Architecture</a>
+      <a href="#plugins">Plugins</a>
+      <a href="#prebuild">Prebuild</a>
+      <a href="#start">Get started</a>
+      <a href="https://github.com/MoonHug-Editor/moonhug">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<section class="hero">
+  <div class="wrap hero-row">
+    <div class="hero-text">
+      <h1>MoonHug Editor</h1>
+      <p class="lead">An extensible editor for Odin projects.</p>
+      <p>A generic editor you extend with attributes, an engine plugin with scenes, components and rendering, and the plugins that build on it.</p>
+      <div class="buttons">
+        <a class="btn primary" href="#start">Get started</a>
+        <a class="btn" href="https://github.com/MoonHug-Editor/moonhug">GitHub</a>
+        <a class="btn" href="https://discord.gg/HTpBmhESwW">Discord</a>
+      </div>
+      <div class="badges">
+        <img src="https://img.shields.io/github/v/tag/MoonHug-Editor/moonhug?sort=semver&amp;label=version&amp;style=flat-square&amp;color=2a2a2e" alt="Latest version" height="20">
+        <img src="https://img.shields.io/badge/license-zlib-2a2a2e?style=flat-square" alt="License: zlib" height="20">
+      </div>
+    </div>
+    <img class="hero-logo" src="media/logo.png" alt="MoonHug logo: a raven in front of a crescent moon" width="420" height="420">
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="status">
+    <strong>Early stage.</strong>
+    APIs change often, there are bugs, and some features are not implemented yet.
+    It is a good moment to contribute and shape how the editor grows.
+    <a href="https://github.com/MoonHug-Editor/moonhug/blob/main/docs/general/Contribution.md">How to contribute</a>
+  </div>
+</section>
+
+<section id="architecture" class="wrap section">
+  <h2>Three layers</h2>
+  <p class="intro">The libs are packages that run nothing on their own. Two executables are built on them: the <b>Editor</b>, which you edit a project in, and the <b>App</b>, the project's own executable. Plugins are what the Editor and the App load.</p>
+
+  <div class="cards three">
+    <article class="card">
+      <span class="step">1</span>
+      <h3>Libs</h3>
+      <p>Small packages, each imported on its own and only where it is used: <code>core</code>, <code>log</code>, <code>serialization</code>, <code>assets</code>, <code>catalog</code>, <code>gfx</code>, <code>input</code>, <code>gizmos</code>.</p>
+      <code class="path">moonhug/libs/&lt;name&gt;</code>
+    </article>
+    <article class="card">
+      <span class="step">2</span>
+      <h3>Editor</h3>
+      <p>The generic editing application: windows, docking, menus, inspector, undo, project view, viewport, Simulate, console. It declares the extension points plugins fill and builds with no plugin installed.</p>
+      <code class="path">moonhug/editor</code>
+    </article>
+    <article class="card">
+      <span class="step">3</span>
+      <h3>Plugins</h3>
+      <p>Packages a project adds or leaves out. They extend the Editor through attributes and build on the plugins they declare as dependencies.</p>
+      <code class="path">plugins/&lt;name&gt;</code>
+    </article>
+  </div>
+
+  <div class="diagram">
+<pre>App      libs ── engine plugin ── other plugins ── the app package
+
+Editor   libs ─┬ engine plugin ── other plugins ── the app package
+               │    │                 │                    │
+               │    └ engine/editor/  └ &lt;plugin&gt;/editor/   └ app/editor/
+               └ editor──┴────────────────┴───────────────────┘</pre>
+    <p>Imports go one way: right to left along a line and up a branch. The Editor runs the same plugin code the App does and adds each plugin's <code>editor/</code> part. The editor never imports a plugin. It reaches one only through what the plugin registered, so with no plugin installed it still builds and runs.</p>
+  </div>
+
+  <p class="more"><a href="https://github.com/MoonHug-Editor/moonhug/blob/main/docs/core/Architecture.md">Read Architecture</a></p>
+</section>
+
+<section id="plugins" class="wrap section">
+  <h2>Plugins</h2>
+  <p class="intro">A plugin is an Odin package with a manifest and a few special folders. A project enables the plugins it needs. Two of them have a special role.</p>
+
+  <div class="cards special">
+    <article class="card engine">
+      <span class="tag">special role</span>
+      <h3>Engine</h3>
+      <p>The plugin that brings scenes, transforms, components, rendering, materials, meshes, the fixed tick and the App's frame loop. Its editor part adds the scene view, the hierarchy and the game view. Other plugins build on it, and a project uses it or not.</p>
+      <code class="path">plugins/engine</code>
+    </article>
+    <article class="card">
+      <span class="tag">special role</span>
+      <h3>App</h3>
+      <p>A runnable plugin: its root declares <code>main</code>, and it is built as its own executable. A game is one kind of app.</p>
+      <code class="path">plugins/app</code>
+    </article>
+  </div>
+
+  <h3 class="sub">In the repo</h3>
+  <div class="grid">
+    <div class="tile"><h4>animation</h4><p>Clip playback through a graph of source, blend and output nodes, and an Animation component on a transform hierarchy.</p></div>
+    <div class="tile"><h4>audio</h4><p>SDL3_mixer playback, imported clips with baked gain, AudioSource, one-shots and spatial sound.</p></div>
+    <div class="tile"><h4>essentials</h4><p>Starter assets: primitive meshes, materials, shaders, textures and the default render pipeline.</p></div>
+    <div class="tile"><h4>input_actions</h4><p>Action maps with bindings per device, a priority stack of maps, and per-frame and per-tick action values.</p></div>
+    <div class="tile"><h4>mhgui</h4><p>The UI canvas: images, layout groups and their editor tooling.</p></div>
+    <div class="tile"><h4>text</h4><p>Signed-distance-field text for the UI canvas, with fonts baked to atlases at import.</p></div>
+    <div class="tile"><h4>sprites</h4><p>SpriteRenderer with a texture cache, sorting and scene view rendering.</p></div>
+    <div class="tile"><h4>particles</h4><p>CPU particle systems with curve and gradient modules over lifetime.</p></div>
+    <div class="tile"><h4>physics2d</h4><p>Rigidbodies, colliders, physics materials and layers on Box2D.</p></div>
+    <div class="tile"><h4>physics3d</h4><p>Rigidbodies, colliders, mesh colliders with convex decomposition, physics materials and layers on Box3D.</p></div>
+    <div class="tile"><h4>shadergraph</h4><p>Node-based surface shaders compiled to the engine's surface template.</p></div>
+    <div class="tile"><h4>postfx</h4><p>Post effects as render pipeline steps: bloom, tonemap operators, FXAA.</p></div>
+    <div class="tile"><h4>tween</h4><p>Tween trees authored in component fields and played as pooled live nodes.</p></div>
+    <div class="tile"><h4>sequencer</h4><p>Timelines as prefabs: a director on the root, tracks and clips as its children.</p></div>
+    <div class="tile"><h4>node_graph</h4><p>A pan and zoom node canvas that other plugins draw their graphs on.</p></div>
+  </div>
+
+  <p class="more"><a href="https://github.com/MoonHug-Editor/moonhug/blob/main/docs/core/Plugins.md">Read Plugins</a></p>
+</section>
+
+<section id="prebuild" class="wrap section">
+  <h2>Attributes in, code out</h2>
+  <p class="intro">Before anything compiles, the prebuild reads the attributes in every installed package and writes the glue: dispatchers, registrations, the editor's windows and menus, the reference docs. A plugin can ship generators of its own in its <code>gen/</code> folder.</p>
+
+  <div class="prebuild">
+    <div class="code">
+      <div class="file">plugins/my_game/projectile.odin</div>
+<pre><span class="at">@(component={menu="Demo/Projectile"})</span>
+<span class="at">@(typ_guid={guid = "7f5e6f68-938f-467f-993e-4d92adb25233"})</span>
+<span class="ty">Projectile</span> :: <span class="kw">struct</span> {
+    <span class="kw">using</span> base: engine.CompData <span class="st">`inspect:"-"`</span>,
+    speed: <span class="ty">f32</span>,
+}
+
+<span class="at">@(update={order=2})</span>
+projectile_tick :: <span class="kw">proc</span>(dt: <span class="ty">f32</span>) { <span class="cm">/* ... */</span> }</pre>
+      <div class="file">plugins/my_game/editor/my_tool.odin</div>
+<pre><span class="at">@(menu_item={path="Window/My Tool"})</span>
+my_tool_open :: <span class="kw">proc</span>() { <span class="cm">/* ... */</span> }</pre>
+    </div>
+
+    <div class="arrow" aria-hidden="true">prebuild <span class="right">→</span><span class="down">↓</span></div>
+
+    <ul class="results">
+      <li><code>@(component)</code> Projectile is in Add Component under Demo, and the inspector draws its fields.</li>
+      <li><code>@(typ_guid)</code> The type has a stable id, so scenes save and load it.</li>
+      <li><code>@(update)</code> <code>projectile_tick</code> runs every frame of the game, sorted by its order.</li>
+      <li><code>@(menu_item)</code> My Tool is in the Window menu.</li>
+    </ul>
+  </div>
+
+  <p class="note">Every attribute is declared in the package it extends, and the prebuild stops on an attribute it does not know, with the closest known name as a hint.</p>
+  <p class="more"><a href="https://github.com/MoonHug-Editor/moonhug/blob/main/docs/core/PrebuildGenerator.md">Read Prebuild Generator</a></p>
+</section>
+
+<section id="videos" class="wrap section">
+  <h2>Videos</h2>
+  <div class="videos">
+    <a class="video" href="https://www.youtube.com/watch?v=TQLF-db3Jqs">
+      <img src="https://i.ytimg.com/vi/TQLF-db3Jqs/hqdefault.jpg" alt="" loading="lazy">
+      <span>Introduction</span>
+    </a>
+    <a class="video" href="https://www.youtube.com/watch?v=MEHnLMaGiEo">
+      <img src="https://i.ytimg.com/vi/MEHnLMaGiEo/hqdefault.jpg" alt="" loading="lazy">
+      <span>Updates</span>
+    </a>
+  </div>
+</section>
+
+<section id="start" class="wrap section">
+  <h2>Get started</h2>
+  <ol class="steps">
+    <li>
+      <p>Install <a href="https://odin-lang.org/docs/install/">Odin</a> and SDL3. On macOS:</p>
+      <pre>brew install sdl3</pre>
+    </li>
+    <li>
+      <p>Clone the repo with its submodules:</p>
+      <pre>git clone --recursive https://github.com/MoonHug-Editor/moonhug.git
+cd moonhug</pre>
+    </li>
+    <li>
+      <p>Set up once. This repairs the plugin links and builds the vendored C libraries:</p>
+      <pre>odin run tools/mh -- setup</pre>
+    </li>
+    <li>
+      <p>Run. This generates code, compiles the editor and launches it:</p>
+      <pre>odin run tools/mh -- run</pre>
+    </li>
+  </ol>
+  <p class="more"><a href="https://github.com/MoonHug-Editor/moonhug/blob/main/docs/general/InstallBuildAndRun.md">Read Install, Build and Run</a></p>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-row">
+    <p>MoonHug is open source under the <a href="https://github.com/MoonHug-Editor/moonhug/blob/main/LICENSE">zlib license</a>. Games built with MoonHug carry no notice obligation from MoonHug itself.</p>
+    <nav>
+      <a href="https://github.com/MoonHug-Editor/moonhug">GitHub</a>
+      <a href="https://discord.gg/HTpBmhESwW">Discord</a>
+      <a href="https://github.com/MoonHug-Editor/moonhug/blob/main/CHANGELOG.md">Changelog</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
