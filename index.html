@@ -25,7 +25,8 @@
       <a href="#architecture">Architecture</a>
       <a href="#plugins">Plugins</a>
       <a href="#prebuild">Prebuild</a>
-      <a href="#start">Get started</a>
+      <a href="#docs">Docs</a>
+      <a href="https://github.com/MoonHug-Editor/moonhug/blob/main/docs/general/InstallBuildAndRun.md">Get started</a>
       <a href="https://github.com/MoonHug-Editor/moonhug">GitHub</a>
     </nav>
   </div>
@@ -40,7 +41,7 @@
       <p class="lead">An extensible editor for Odin projects.</p>
       <p>A generic editor you extend with attributes, an engine plugin with scenes, components and rendering, and the plugins that build on it.</p>
       <div class="buttons">
-        <a class="btn primary" href="#start">Get started</a>
+        <a class="btn primary" href="https://github.com/MoonHug-Editor/moonhug/blob/main/docs/general/InstallBuildAndRun.md">Get started</a>
         <a class="btn" href="https://github.com/MoonHug-Editor/moonhug">GitHub</a>
         <a class="btn" href="https://discord.gg/HTpBmhESwW">Discord</a>
       </div>
@@ -190,28 +191,28 @@ my_tool_open :: <span class="kw">proc</span>() { <span class="cm">/* ... */</spa
   </div>
 </section>
 
+<section id="docs" class="wrap section">
+  <h2>Local documentation</h2>
+  <p class="intro">The editor's docs and your own, together on your local machine and always up to date.</p>
+  <pre class="command">make docs OPEN=1</pre>
+  <div class="grid docs-grid">
+    <div class="tile"><h4>Pages</h4><p>The guides in the repo's <code>docs/</code> folder and the <code>docs/</code> folder of every installed plugin, your own included. Each plugin gets a landing page from its manifest.</p></div>
+    <div class="tile"><h4>Reference</h4><p>Generated from the code: every attribute, field tag and naming convention, and one page per package with its public declarations, for the libs, the editor and each plugin.</p></div>
+    <div class="tile"><h4>Source</h4><p>Every <code>file:line</code> opens the code: in your code editor through a URL setting, or as a highlighted copy on the site.</p></div>
+    <div class="tile"><h4>Live</h4><p>Served at <code>localhost:7272</code> with search. A saved page shows about a second later, and the Rebuild button regenerates the reference.</p></div>
+  </div>
+  <p class="note">Needs Hugo 0.166 or newer: <code>brew install hugo</code>.</p>
+  <p class="more"><a href="https://github.com/MoonHug-Editor/moonhug/blob/main/docs/general/Documentation.md">Read Documentation</a></p>
+</section>
+
 <section id="start" class="wrap section">
-  <h2>Get started</h2>
-  <ol class="steps">
-    <li>
-      <p>Install <a href="https://odin-lang.org/docs/install/">Odin</a> and SDL3. On macOS:</p>
-      <pre>brew install sdl3</pre>
-    </li>
-    <li>
-      <p>Clone the repo with its submodules:</p>
-      <pre>git clone --recursive https://github.com/MoonHug-Editor/moonhug.git
-cd moonhug</pre>
-    </li>
-    <li>
-      <p>Set up once. This repairs the plugin links and builds the vendored C libraries:</p>
-      <pre>odin run tools/mh -- setup</pre>
-    </li>
-    <li>
-      <p>Run. This generates code, compiles the editor and launches it:</p>
-      <pre>odin run tools/mh -- run</pre>
-    </li>
-  </ol>
-  <p class="more"><a href="https://github.com/MoonHug-Editor/moonhug/blob/main/docs/general/InstallBuildAndRun.md">Read Install, Build and Run</a></p>
+  <div class="start">
+    <div>
+      <h2>Get started</h2>
+      <p>Installing, building and running the editor is described step by step in one page.</p>
+    </div>
+    <a class="btn primary" href="https://github.com/MoonHug-Editor/moonhug/blob/main/docs/general/InstallBuildAndRun.md">Install, Build and Run</a>
+  </div>
 </section>
 
 </main>

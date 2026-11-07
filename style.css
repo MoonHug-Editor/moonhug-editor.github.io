@@ -208,11 +208,27 @@ pre {
 .video span::before { content: "▶  "; }
 .video:hover { text-decoration: none; }
 
+/* Local documentation */
+
+.command { display: inline-block; margin-bottom: 20px; padding: 12px 20px; font-size: 1em; color: var(--text); }
+.command::before { content: "$ "; color: var(--muted); }
+.docs-grid .tile p code { font-size: 0.9em; }
+
 /* Get started */
 
-.steps { margin: 0; padding-left: 1.4em; display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; max-width: 760px; }
-.steps p { margin: 0 0 8px; }
-.steps li::marker { color: var(--muted); }
+.start {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px;
+  border: 1px solid #3a3f4a;
+  border-radius: var(--radius);
+  background: linear-gradient(160deg, #1a1c22, var(--bg-raised) 70%);
+}
+.start h2 { margin: 0 0 6px; }
+.start p { margin: 0; color: var(--muted); }
+.start .btn { white-space: nowrap; }
 
 /* Footer */
 
@@ -234,4 +250,5 @@ pre {
   .arrow .right { display: none; }
   .arrow .down { display: inline; }
   .footer-row { flex-direction: column; align-items: flex-start; }
+  .start { flex-direction: column; align-items: flex-start; }
 }
