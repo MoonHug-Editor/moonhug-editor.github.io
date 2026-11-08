@@ -26,7 +26,7 @@
       <a href="#plugins">Plugins</a>
       <a href="#prebuild">Prebuild</a>
       <a href="#docs">Docs</a>
-      <a href="https://github.com/MoonHug-Editor/moonhug/blob/main/docs/general/InstallBuildAndRun.md">Get started</a>
+      <a href="#start">Get started</a>
       <a href="https://github.com/MoonHug-Editor/moonhug">GitHub</a>
     </nav>
   </div>
@@ -41,7 +41,7 @@
       <p class="lead">An extensible editor for Odin projects.</p>
       <p>A generic editor you extend with attributes, an engine plugin with scenes, components and rendering, and the plugins that build on it.</p>
       <div class="buttons">
-        <a class="btn primary" href="https://github.com/MoonHug-Editor/moonhug/blob/main/docs/general/InstallBuildAndRun.md">Get started</a>
+        <a class="btn primary" href="#start">Get started</a>
         <a class="btn" href="https://github.com/MoonHug-Editor/moonhug">GitHub</a>
         <a class="btn" href="https://discord.gg/HTpBmhESwW">Discord</a>
       </div>
@@ -88,15 +88,27 @@
     </article>
   </div>
 
-  <div class="diagram">
-<pre>App      libs ── engine plugin ── other plugins ── the app package
+  <figure class="arch" aria-label="Layer diagram: the Editor box holds everything, the App box holds the plugin code and the libs, each editor part imports its plugin and the editor imports the libs">
+    <div class="arch-box editor"><span class="arch-chip">Editor</span></div>
+    <div class="arch-box app"><span class="arch-chip">App</span></div>
+    <div class="arch-axis"><span>imports</span></div>
 
-Editor   libs ─┬ engine plugin ── other plugins ── the app package
-               │    │                 │                    │
-               │    └ engine/editor/  └ &lt;plugin&gt;/editor/   └ app/editor/
-               └ editor──┴────────────────┴───────────────────┘</pre>
-    <p>Imports go one way: right to left along a line and up a branch. The Editor runs the same plugin code the App does and adds each plugin's <code>editor/</code> part. The editor never imports a plugin. It reaches one only through what the plugin registered, so with no plugin installed it still builds and runs.</p>
-  </div>
+    <div class="blk r1"><b>app</b><small>the project's own package</small></div>
+    <div class="blk r2"><b>plugins</b><small>animation, audio, physics, particles, mhgui, …</small></div>
+    <div class="blk engine r3"><span class="tag">Special</span><b>engine</b><small>scenes, components, assets, rendering</small></div>
+    <div class="blk libs r4"><b>libs</b><small>core · log · serialization · assets · catalog · gfx · input · gizmos</small></div>
+
+    <div class="arch-link r1"></div>
+    <div class="arch-link r2"></div>
+    <div class="arch-link r3"></div>
+    <div class="arch-link r4"></div>
+
+    <div class="blk part r1"><b>app/<wbr>editor</b></div>
+    <div class="blk part r2"><b>&lt;plugin&gt;/<wbr>editor</b></div>
+    <div class="blk part r3"><b>engine/<wbr>editor</b></div>
+    <div class="blk shell r4"><b>editor</b><small>windows, inspector, undo, project view</small></div>
+  </figure>
+  <p class="arch-note">Imports go down, and from right to left. The Editor runs the same plugin code the App does and adds each plugin's <code>editor/</code> part, which imports its plugin and the editor. The editor imports only the libs. It reaches a plugin only through what the plugin registered, so with no plugin installed it still builds and runs.</p>
 
   <p class="more"><a href="https://github.com/MoonHug-Editor/moonhug/blob/main/docs/core/Architecture.md">Read Architecture</a></p>
 </section>
