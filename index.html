@@ -108,7 +108,7 @@
     <div class="blk part r3"><b>engine/<wbr>editor</b></div>
     <div class="blk shell r4"><b>editor</b><small>windows, inspector, undo, project view</small></div>
   </figure>
-  <p class="arch-note">Imports go down, and from right to left. The Editor runs the same plugin code the App does and adds each plugin's <code>editor/</code> part, which imports its plugin and the editor. The editor imports only the libs. It reaches a plugin only through what the plugin registered, so with no plugin installed it still builds and runs.</p>
+  <p class="arch-note">The Editor runs the same plugin code the App does and adds each plugin's <code>editor/</code> part, which imports its plugin and the editor. The editor imports only the libs. It reaches a plugin only through what the plugin registered, so with no plugin installed it still builds and runs.</p>
 
   <p class="more"><a href="https://github.com/MoonHug-Editor/moonhug/blob/main/docs/core/Architecture.md">Read Architecture</a></p>
 </section>
